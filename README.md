@@ -1,47 +1,93 @@
 # NETWORKWALKS-B083-Week2
-2nd Week Work on Cybersecurity Internship Program
+# Week 2 Penetration Testing & Reconnaissance Report
 
-Week 2 Penetration Testing & Reconnaissance Report
-Overview
-This repository contains the Week 2 deliverables and final report documenting passive and active reconnaissance activities conducted against authorized target domains. The assessment focuses on identifying asset footprints, technological stacks, and potential exposure to establish baseline security hygiene and risk profiles.
+## Overview
 
-Scope & Target Assessment
-Reconnaissance and fingerprinting operations were performed across the following scope:
+This repository documents the active and passive reconnaissance activities conducted for the **Week 2 Penetration Testing** assessment against target web properties (`networkwalks.com` and `microsoft.com`). The primary objective is mapping organizational digital footprints, identifying hosting and infrastructure setups, and analyzing potential security risks.
 
-Primary Domains Evaluated: networkwalks.com, microsoft.com
+---
 
-Methodology: Passive OSINT collection, DNS enumeration, technology stack fingerprinting, and non-intrusive active network mapping.
+## Technical Methodology & Evidence
 
-Methodology & Tools Used
-Domain & Ownership Analysis: WHOIS registration lookup and DNS record analysis.
+### 1. WHOIS & Domain Ownership Lookup
+Used to identify registrants, nameservers, registrar data, and expiration timelines.
 
-Technology Stack Fingerprinting: WhatWeb for web server, framework, and CMS identification.
+![WHOIS Output](images/SS01-whois.png)
 
-OSINT & Intelligence Gathering: theHarvester for email, subdomain, and public endpoint harvesting.
+---
 
-Network & Port Scanning: Zenmap / Nmap for service discovery and port state mapping.
+### 2. Technology Stack Fingerprinting (WhatWeb)
+Executed to identify underlying web servers, content management systems (CMS), embedded plugins, and programming frameworks.
 
-Key Findings & Risk Summary
-Findings from this week's assessment have been categorized into a structured risk matrix:
+![WhatWeb Output](images/SS02-whatweb.png)
 
-Medium Severity:
+---
 
-Exposure of administrative or staging endpoints identified during subdomain enumeration.
+### 3. DNS Resolution & Endpoint Testing (nslookup & curl)
+Performed to extract IPv4/IPv6 mappings and inspect HTTP response headers for disclosure or security policy configurations.
 
-Detailed service version disclosures enabling targeted exploit research.
+#### DNS Queries
+![nslookup Output](images/SS03-nslookup.png)
 
-Low Severity / Informational:
+#### HTTP Response Banner Inspection
+![curl Output](images/SS04-curl.png)
 
-Publicly available DNS and WHOIS records detailing organizational assets.
+---
 
-Absence or misconfiguration of non-critical HTTP security response headers.
+### 4. WAF Detection & DNS Enumeration (wafw00f & dnsrecon)
+Identifies Web Application Firewalls protecting targets and discovers secondary DNS records, mail exchangers (MX), and zone transfers.
 
-Remediation Roadmap
-Asset Management: Enforce strict access controls and hide unnecessary public-facing staging/subdomain endpoints.
+#### Web Application Firewall Scan
+![wafw00f Output](images/SS05-wafw00f.png)
 
-Information Disclosure Control: Suppress verbose web server banners and software version details.
+#### DNS Record Mapping
+![dnsrecon Output](images/SS06-dnsrecon.png)
 
-Security Headers: Implement missing security headers (e.g., HSTS, X-Content-Type-Options, Content-Security-Policy).
+---
 
-Repository Contents
-W2-PM-Final Report-Christ.pdf — Complete final report document including detailed findings, scan outputs, and executive summary.
+### 5. OSINT & Information Gathering (theHarvester)
+Aggregates public information including subdomains, exposed employee email addresses, and server hostnames.
+
+#### Subdomain Harvesting
+![theHarvester Scan 1](images/SS07-harvester01.png)
+
+#### Exposed Identity Discovery
+![theHarvester Scan 2](images/SS08-harvester02.png)
+
+---
+
+### 6. Network & Port Scanning (Zenmap / Nmap)
+Executes active network mapping to discover listening services, open network ports, and running service banners.
+
+#### Host Discovery & Port Scanning
+![Zenmap Scan 1](images/SS09-zenmap01.png)
+
+#### Service Version Detection
+![Zenmap Scan 2](images/SS09-zenmap02.png)
+
+---
+
+## Key Findings & Risk Matrix
+
+### Medium Severity
+* **Administrative & Staging Endpoint Exposure:** Subdomains exposed during enumeration increase the attack surface for potential targeting.
+* **Verbose Service Version Banner Disclosure:** Detailed version data allows attackers to search for known CVE exploits.
+
+### Low Severity / Informational
+* **Public Information Leakage:** Public DNS and WHOIS records reveal infrastructure configuration.
+* **Missing HTTP Security Headers:** Key protective HTTP headers (such as `HSTS`, `X-Content-Type-Options`) were missing or unconfigured.
+
+---
+
+## Remediation Recommendations
+
+1. **Information Disclosure Suppression:** Disable verbose server banners and hide exact software version tags on public services.
+2. **Endpoint Hardening:** Restrict access to staging environments and administrative portals using strict IP whitelisting or VPNs.
+3. **HTTP Header Implementation:** Enforce security response headers (`HSTS`, `Content-Security-Policy`, `X-Frame-Options`) across all web servers.
+
+
+---
+
+## Document Deliverable
+
+* 📄 **[Download Full Penetration Testing Report (PDF)](W2-PM-Final%20Report-Christ.pdf)** — Official comprehensive assessment report containing executive summaries, detailed methodology, and formal vulnerability analysis.
